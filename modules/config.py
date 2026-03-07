@@ -41,4 +41,4 @@ DURATION_LIMIT = int(getenv("DURATION_LIMIT", "1200"))
 STRING_SESSION = getenv("STRING_SESSION", "BQAayAkALwhzWzgK02ZKzJ4nzQh3zIeaprf5ja3FjOq4GotUCkpl4CdGfvCbmswYXbanpNEqi2Twxt-3GXTuU754rLRn-Q9XSqov4edAhhv0shBnU9wuQrPkjBN1qX8oUmXIMgapzSAEHw28qY63N4L5WAjurK6YJfHGne9jVnLS8vgPVMklGKuNUvVEqwb9WkbZOMHc0SA7x9ymRmD3a-1RS2f_vYztMi8ATSbiohQc72PuFZrRftkEmylmC_R3yMjhbhebADSSvlVIUw0vNAkP_IpccPtok8j6skLLquSIee3ovxeRdwxGVLT_L6WvpEtIuxMbeVjT3BKjjeos_zudM7OhyQAAAAHmxfTeAA")
 COMMAND_PREFIXES = list(getenv("COMMAND_PREFIXES", "/ ! .").split())
 SUDO_USERS = list(map(int, getenv("SUDO_USERS", "1254508607").split()))
-aiohttpsession = aiohttp.ClientSession()
+
