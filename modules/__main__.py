@@ -12,6 +12,16 @@ bot = Client(
     plugins=dict(root="plugins")
 )
 
+app = Flask(__name__)
+
+@app.route('/')
+def health_check():
+    return "Bot is alive!", 200
+
+def run_flask():
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port)
+
 async def main():
     # 1. Initialize the aiohttp session FIRST (while loop is active)
     await get_session() 
