@@ -8,7 +8,7 @@ yt-dlp
 motor
 pillow
 psutil
-pyrogram
+pyrogram==1.4.16
 py-tgcalls==0.9.7
 python-dotenv
 requests
@@ -16,4 +16,3 @@ tgcrypto
 wget
 youtube-search
 youtube-search-python
-pyrogram==2.0.106
