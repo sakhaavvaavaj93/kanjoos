@@ -2,6 +2,7 @@ import os
 from os import getenv
 from dotenv import load_dotenv
 import aiohttp
+import asyncio
 
 _session = None
 
@@ -14,8 +15,6 @@ async def get_session():
 load_dotenv()
 que = {}
 admins = {}
-import aiohttp
-import asyncio
 
 # Initialize as None instead of calling ClientSession()
 aiohttpsession = None
