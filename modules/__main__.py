@@ -40,7 +40,7 @@ async def main():
         await bot.start()
         print("Bot is online!")
 
-        # Start additional module logic
+        # Start additional module logic (PyTgCalls, etc.)
         await run_client() 
 
         # Keep the script alive
@@ -63,4 +63,22 @@ async def main():
             print("Bot was already disconnected.")
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    # Use manual loop management to satisfy PyTgCalls cleanup
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    
+    try:
+        loop.run_until_complete(main())
+    except KeyboardInterrupt:
+        pass
+    finally:
+        # Allow pending tasks (like pytgcalls cleanup) to finish before closing
+        try:
+            pending = asyncio.all_tasks(loop)
+            if pending:
+                loop.run_until_complete(asyncio.gather(*pending))
+        except Exception:
+            pass
+            
+        loop.close()
+        print("Loop closed successfully.")
