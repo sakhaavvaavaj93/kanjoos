@@ -9,6 +9,10 @@ from . import queues
 client = Client(config.STRING_SESSION, config.API_ID, config.API_HASH)
 pytgcalls = PyTgCalls(client)
 
+async def run():
+    async with aiohttp.ClientSession() as session:
+        # Pass this session to parts of your app that need it
+        await start_bot(session)
 
 @pytgcalls.on_stream_end()
 async def on_stream_end(client: PyTgCalls, update: Update) -> None:
