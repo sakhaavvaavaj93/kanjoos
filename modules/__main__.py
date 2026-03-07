@@ -11,6 +11,10 @@ bot = Client(
     plugins=dict(root="plugins")
 )
 
+from flask import Flask
+import threading
+import os
+
 app = Flask(__name__)
 
 @app.route('/')
