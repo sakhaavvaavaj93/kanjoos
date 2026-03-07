@@ -4,7 +4,7 @@ import threading
 from flask import Flask
 from pyrogram import Client, idle
 from modules.clientbot import run as run_client
-from modules.config import API_ID, API_HASH, BOT_TOKEN, get_session, aiohttpsession
+from modules.config import API_ID, API_HASH, BOT_TOKEN, get_session
 
 # 1. Flask setup for Health Checks
 app = Flask(__name__)
@@ -14,9 +14,8 @@ def health_check():
     return "Bot is alive!", 200
 
 def run_flask():
-    # Use PORT from environment (default 10000)
     port = int(os.environ.get("PORT", 10000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port, debug=False, use_reloader=False)
 
 # 2. Pyrogram Client setup
 bot = Client(
@@ -41,7 +40,7 @@ async def main():
         await bot.start()
         print("Bot is online!")
 
-        # Start additional module logic (PyTgCalls, etc.)
+        # Start additional module logic
         await run_client() 
 
         # Keep the script alive
@@ -53,13 +52,15 @@ async def main():
     finally:
         # 5. Graceful shutdown
         from modules import config
-        if config.aiohttpsession:
+        if hasattr(config, 'aiohttpsession') and config.aiohttpsession:
             await config.aiohttpsession.close()
             print("Aiohttp session closed.")
         
-        await bot.stop()
-        print("Bot stopped.")
+        if bot.is_connected:
+            await bot.stop()
+            print("Bot stopped.")
+        else:
+            print("Bot was already disconnected.")
 
 if __name__ == "__main__":
-    # Standard asyncio entry point
     asyncio.run(main())
