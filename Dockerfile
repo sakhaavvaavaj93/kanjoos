@@ -2,7 +2,8 @@
 FROM debian:bookworm-slim AS builder
 
 # Combine apt commands to reduce layers and clean up cache immediately
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN sudo apt update && sudo apt install curl
+    apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
     python3-pip \
