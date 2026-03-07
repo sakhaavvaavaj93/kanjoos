@@ -4,11 +4,10 @@ from modules.clientbot import run as run_client
 from modules.config import API_ID, API_HASH, BOT_TOKEN, get_session
 
 bot = Client(
-    "my_bot",       # Pass the name as the first positional argument
+    ":memory:", # Use this special name for an in-memory session
     api_id=API_ID,
     api_hash=API_HASH,
     bot_token=BOT_TOKEN,
-    in_memory=True,
     plugins=dict(root="plugins")
 )
 
