@@ -40,8 +40,17 @@ async def main():
         await config.get_session() 
         print("Aiohttp session initialized!")
 
-        # Start the bot client
-        await bot.start()
+        # Start the bot client with Time Sync retry logic
+        try:
+            await bot.start()
+        except Exception as e:
+            if "[16]" in str(e) or "msg_id too low" in str(e).lower():
+                print("Time sync error detected. Waiting 5 seconds to retry...")
+                await asyncio.sleep(5)
+                await bot.start() # Second attempt
+            else:
+                raise e
+
         print("Bot is online!")
 
         # Start your additional module logic (PyTgCalls, etc.)
@@ -81,5 +90,11 @@ if __name__ == "__main__":
                 loop.run_until_complete(asyncio.gather(*pending, return_exceptions=True))
         except Exception:
             pass
-        loop.close()
-        print("Loop closed.")
+        
+        # We wrap loop.close() in a try-block because pytgcalls often 
+        # tries to use the loop during an 'atexit' call.
+        try:
+            loop.close()
+            print("Loop closed.")
+        except:
+            pass
