@@ -20,7 +20,7 @@ def run_flask():
 
 # 2. Pyrogram Client setup
 bot = Client(
-    ":memory:", 
+    "kanjoos_bot", # Changed from ":memory:" to a string
     api_id=config.API_ID,
     api_hash=config.API_HASH,
     bot_token=config.BOT_TOKEN,
