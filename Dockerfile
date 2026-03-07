@@ -2,17 +2,16 @@
 FROM debian:bookworm-slim AS builder
 
 # Combine apt commands to reduce layers and clean up cache immediately
-RUN sudo apt update && sudo apt install curl
-    apt-get update && apt-get install -y --no-install-recommends \
+# Use RUN at the start of the command block
+RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
     python3-pip \
     python3-venv \
     ffmpeg \
-    && curl -fsSL https://deb.nodesource.com | bash - \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
-
 WORKDIR /app
 
 # Copy dependency files first to leverage layer caching
