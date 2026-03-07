@@ -4,9 +4,10 @@ import threading
 from flask import Flask
 from pyrogram import Client, idle
 from modules.clientbot import run as run_client
-from modules.config import API_ID, API_HASH, BOT_TOKEN, get_session
+# Ensure config is imported correctly for the session close logic
+import modules.config as config 
 
-# 1. Flask setup for Health Checks
+# 1. Flask setup
 app = Flask(__name__)
 
 @app.route('/')
@@ -15,70 +16,68 @@ def health_check():
 
 def run_flask():
     port = int(os.environ.get("PORT", 10000))
+    # Render REQUIRES host='0.0.0.0'
     app.run(host='0.0.0.0', port=port, debug=False, use_reloader=False)
 
-# 2. Pyrogram Client setup
+# 2. Pyrogram Client
 bot = Client(
     ":memory:", 
-    api_id=API_ID,
-    api_hash=API_HASH,
-    bot_token=BOT_TOKEN,
+    api_id=config.API_ID,
+    api_hash=config.API_HASH,
+    bot_token=config.BOT_TOKEN,
     plugins=dict(root="plugins")
 )
 
 async def main():
     try:
-        # Start Flask in a background thread
+        # Start Flask FIRST
         threading.Thread(target=run_flask, daemon=True).start()
         print("Flask Health Check started!")
+        
+        # Give Flask 1 second to bind to the port (Helps Render status)
+        await asyncio.sleep(1)
 
-        # Initialize the aiohttp session
-        await get_session() 
+        # Initialize session
+        await config.get_session() 
         print("Aiohttp session initialized!")
 
-        # Start the primary bot
+        # Start the bot
         await bot.start()
         print("Bot is online!")
 
-        # Start additional module logic (PyTgCalls, etc.)
+        # Start PyTgCalls or ClientBot
         await run_client() 
+        print("ClientBot logic running!")
 
-        # Keep the script alive
         await idle()
 
     except Exception as e:
-        print(f"Startup failed: {e}")
+        print(f"CRITICAL ERROR during startup: {e}")
 
     finally:
-        # 5. Graceful shutdown
-        from modules import config
+        # Improved Cleanup
         if hasattr(config, 'aiohttpsession') and config.aiohttpsession:
             await config.aiohttpsession.close()
             print("Aiohttp session closed.")
         
         if bot.is_connected:
             await bot.stop()
-            print("Bot stopped.")
-        else:
-            print("Bot was already disconnected.")
+            print("Bot disconnected gracefully.")
 
 if __name__ == "__main__":
-    # Use manual loop management to satisfy PyTgCalls cleanup
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     
     try:
         loop.run_until_complete(main())
     except KeyboardInterrupt:
-        pass
+        print("Bot stopped by user.")
     finally:
-        # Allow pending tasks (like pytgcalls cleanup) to finish before closing
+        # Clean up any lingering tasks from pytgcalls
         try:
             pending = asyncio.all_tasks(loop)
             if pending:
-                loop.run_until_complete(asyncio.gather(*pending))
+                loop.run_until_complete(asyncio.gather(*pending, return_exceptions=True))
         except Exception:
             pass
-            
         loop.close()
-        print("Loop closed successfully.")
