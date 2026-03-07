@@ -19,9 +19,17 @@ admins = {}
 # Initialize as None instead of calling ClientSession()
 aiohttpsession = None
 
+import aiohttp
+from typing import List
+
+COMMAND_PREFIXES = ["!", "/"]
+SUDO_USERS = [1282754256]
+
+# Define the variable but don't call ClientSession() yet
+aiohttpsession = None
+
 async def get_session():
     global aiohttpsession
-    # Create the session only if it doesn't exist or was closed
     if aiohttpsession is None or aiohttpsession.closed:
         aiohttpsession = aiohttp.ClientSession()
     return aiohttpsession
