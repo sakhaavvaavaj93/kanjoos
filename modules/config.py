@@ -14,7 +14,19 @@ async def get_session():
 load_dotenv()
 que = {}
 admins = {}
+import aiohttp
+import asyncio
 
+# Initialize as None instead of calling ClientSession()
+aiohttpsession = None
+
+async def get_session():
+    global aiohttpsession
+    # Create the session only if it doesn't exist or was closed
+    if aiohttpsession is None or aiohttpsession.closed:
+        aiohttpsession = aiohttp.ClientSession()
+    return aiohttpsession
+    
 API_ID = int(getenv("API_ID", "1755145"))
 API_HASH = getenv("API_HASH", "f1933c5fb9c5c7b4fc1240ae36c809df")
 BOT_TOKEN = getenv("BOT_TOKEN", "8233014670:AAG5_XGjwq2yAo28v8nGz54GT5yqpetPQuU")
