@@ -3,9 +3,8 @@ from pyrogram import Client, idle
 from modules.clientbot import run as run_client
 from modules.config import API_ID, API_HASH, BOT_TOKEN, get_session
 
-# Initialize the Bot
 bot = Client(
-    name="my_bot",
+    "my_bot",       # Pass the name as the first positional argument
     api_id=API_ID,
     api_hash=API_HASH,
     bot_token=BOT_TOKEN,
