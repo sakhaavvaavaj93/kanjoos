@@ -9,8 +9,8 @@ yt-dlp
 motor
 pillow
 psutil
-pyrogram==1.4.16
-py-tgcalls==0.9.7
+pyrogram==2.0.106
+py-tgcalls==2.3.3
 python-dotenv
 requests
 tgcrypto
